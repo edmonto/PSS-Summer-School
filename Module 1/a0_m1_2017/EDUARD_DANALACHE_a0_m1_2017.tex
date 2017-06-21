@@ -43,8 +43,24 @@ I am taking this course to get more exposure to research and to learn how to use
 
 \section{R Functions}
 IN AN ITEMIZED LIST (HINT: GOOGLE HOW TO DO THIS) DESCRIBE WHAT THE FUNCTIONS setwd(), ls(), and str() DO. THEY ARE USED IN THE R PORTION OF THIS ASSIGNMENT. 
+\begin{itemize}
+\item setwd(dir): Returns the current directory and then sets the working directory to that specified by "dir." It will give an error if it does not succeed.
+\item ls(...): Lists the data sets and functions that have been defined in the current environment by default. Has other optional arguments as well..
+\item str(obj, ...): Displays the internal structure of an R object specified by "obj." Has other optional arguments as well.
+\end{itemize}
 
 \section{R Output}
-PLACE OUTPUT FROM R CONSOLE HERE. USE VERBATIM TAGS TO DISPLAY THIS.
+\begin{verbatim}
+[1] "cars_df"    "longley_df" "my_name"    "students"   "years"     
+
+'data.frame':	16 obs. of  7 variables:
+ $ GNP.deflator: num  83 88.5 88.2 89.5 96.2 ...
+ $ GNP         : num  234 259 258 285 329 ...
+ $ Unemployed  : num  236 232 368 335 210 ...
+ $ Armed.Forces: num  159 146 162 165 310 ...
+ $ Population  : num  108 109 110 111 112 ...
+ $ Year        : int  1947 1948 1949 1950 1951 1952 1953 1954 1955 1956 ...
+ $ Employed    : num  60.3 61.1 60.2 61.2 63.2 ...
+\end{verbatim}
 
 \end{document}
