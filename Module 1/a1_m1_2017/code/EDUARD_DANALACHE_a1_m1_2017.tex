@@ -1,0 +1,50 @@
+\documentclass[11pt]{article}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DO NOT EDIT BELOW THIS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[margin=1in]{geometry}
+\linespread{1.5}
+
+\begin{document}
+
+%%% Header %%%
+\begin{center}
+{\large 2017 PSS SUMMER SCHOOL}
+
+Assignment 1
+
+
+\textbf{Eduard Danalache}
+
+\textbf{Rice University}
+
+\textit{Due: 12:30pm on June 22}
+
+
+
+\end{center}
+
+\vspace{0.5cm}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DO NOT EDIT ABOVE THIS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%% Body %%%
+\section{Problem 2.1}
+\subsection{a.}
+\begin{itemize}
+\item \textbf{str(obj, ...):} Gives the structure of an R object $obj$. Particularly useful for displaying the contents of lists. Does not return anything, but instead prints output to the terminal.
+\item \texttt{is.vector(x, mode="any"):} Used to determine whether an object $x$ is a vector with type $mode$. If $mode$ == "any" then returns TRUE if $x$ is any type of vector. Otherwise returns TRUE if typeof($x$) == $mode$, FALSE otherwise.
+\item \textit{is.atomic(x):} Returns TRUE if object $x$ is of an atomic type, FALSE otherwise.
+\item \textsl{is.list(x):} Returns TRUE if object $x$ is a list or pairlist of length $>$ 0.
+\end{itemize}
+\subsection{b.}
+\begin{itemize}
+\item \textsc{typeof(x):} Determines the type or storage mode of object $x$. Returns a character string with the type or mode.
+\item \textsf{is.numeric(x):} Returns TRUE if object $x$ is of mode numeric (i.e. it has type integer or double), FALSE otherwise.
+\item \textsc{is.integer(x):} Returns TRUE if object $x$ is of type integer, FALSE otherwise.
+\item \textsc{is.double(x):} Returns TRUE if object $x$ is of type double, FALSE otherwise.
+\item \textsc{is.character(x):} Returns TRUE if object $x$ is of type character, FALSE otherwise.
+\item \textsc{is.logical(x):} Returns TRUE if object $x$ is of type logical, FALSE otherwise.
+\end{itemize}
+
+\end{document}
