@@ -6,7 +6,7 @@
 rm(list=ls())
 
 # identify home directory
-home.dir    <- "C:/Users/Edi/Documents/Programming/R/PSS-Summer-School/Module 1/a2a_m2_2017/"
+home.dir    <- "C:/Users/Edi/Documents/Programming/R/PSS-Summer-School/Module 1/a2a_m1_2017/"
 
 # identify auxillary directories, based off of home.dir
 code.dir    <- paste0(home.dir, "code/")
