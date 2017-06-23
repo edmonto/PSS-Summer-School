@@ -6,7 +6,7 @@
 rm(list=ls())
 
 # identify home directory
-home.dir    <- "C:/Users/eduar/Documents/Programming/PSS-Summer-School/Module 1/a2a_m2_2017/"
+home.dir    <- "C:/Users/Edi/Documents/Programming/R/PSS-Summer-School/Module 1/a2a_m2_2017/"
 
 # identify auxillary directories, based off of home.dir
 code.dir    <- paste0(home.dir, "code/")
@@ -25,7 +25,7 @@ answers <- list()
 
 
 # problem 2.1
-compute_X <- function(k, year) {
+compute_X <- function(k, year, df) {
   X <- c(0, 0, 0)  #init vector to hold T, U, P
   
   year <- 69 - (year - 1948) #1-index year to read from vector
@@ -33,7 +33,7 @@ compute_X <- function(k, year) {
   for (i in 1:3) {  #iterate for each indicator
     for (j in 0:(k[i] - 1)) {   #iterate for each year
       #modify X[i] to reflect if the indicator is increasing or decreasing
-      X[i] <- X[i] + sign(c(agg_econ[[i + 2]][year + j]))[1] 
+      X[i] <- X[i] + sign(c(df[[i + 2]][year + j]))[1] 
     }
   }
   
@@ -49,7 +49,7 @@ compute_X <- function(k, year) {
   return(X)
 }
 
-chngs_846 <- compute_X(c(8, 4, 6), 2012)
+chngs_846 <- compute_X(c(8, 4, 6), 2012, agg_econ)
 answers$q2.1 <- chngs_846
 
 
@@ -63,11 +63,11 @@ mean_sq_diff <- function(expected_values, calculated_values) {
   return(sum)
 }
 
-min_gamma_X <- function(gammas, X, year) {
+min_gamma_X <- function(gammas, X, year, df) {
   year <- 69 - (year - 1948) #1-index year to read from vector
   
-  G <- sum(gammas * X)
-  G_h <- agg_econ$gdp_chng[year - 1]
+  G_h <- sum(gammas * X)
+  G <- as.integer(df$gdp_chng[year - 1] > 1)
   
   return(mean_sq_diff(G, G_h))
 }
@@ -78,12 +78,13 @@ constr_mat <- matrix(c(chngs_846[1], -1*chngs_846[1],
 theta <- c(.3, .3, .3)
 constr_vec <- c(0, -1)
 
-weights_given <- constrOptim(theta, min_gamma_X, NULL, constr_mat, constr_vec, X=chngs_846, year=2012)$par
+optimum <- constrOptim(theta, min_gamma_X, NULL, constr_mat, constr_vec, X=chngs_846, year=2012, df=agg_econ)
+weights_given <- optimum$par
 answers$q2.2 <- weights_given
 
 
 # problem 2.3
-compute_all_X <- function(k) {
+compute_all_X <- function(k, df) {
   end_year <- 68 - max(k)[1] #determine how many years we can't calculate based on largest number of years to check
   
   X_m <- data.frame(matrix(nrow=end_year, ncol=3))
@@ -92,7 +93,7 @@ compute_all_X <- function(k) {
   for (i in 1:(end_year)) {
     year <- 2016 - i #ignore 2016 (no 2017 value)
     
-    X <- compute_X(k, year)
+    X <- compute_X(k, year, df)
     
     for (j in 1:3) {
       X_m[i,][j] <- X[j]
@@ -102,7 +103,7 @@ compute_all_X <- function(k) {
   return(X_m)
 }
 
-X_m <- compute_all_X(c(8, 4, 6))
+X_m <- compute_all_X(c(8, 4, 6), agg_econ)
 answers$q2.3 <- X_m
 
 
@@ -113,18 +114,18 @@ k_C <- c(12, 3, 4)
 k_D <- c(5, 7, 9)
 k_E <- c(6, 3, 4)
 
-X_m_A <- compute_all_X(k_A)
-X_m_B <- compute_all_X(k_B)
-X_m_C <- compute_all_X(k_C)
-X_m_D <- compute_all_X(k_D)
-X_m_E <- compute_all_X(k_E)
+X_m_A <- compute_all_X(k_A, agg_econ)
+X_m_B <- compute_all_X(k_B, agg_econ)
+X_m_C <- compute_all_X(k_C, agg_econ)
+X_m_D <- compute_all_X(k_D, agg_econ)
+X_m_E <- compute_all_X(k_E, agg_econ)
 
-calc_predictions <- function(X_m, gammas) {
+calc_predictions <- function(X_m, gammas, df) {
   expected <- vector(mode="double", length=length(X_m[[1]]))
   calculated <- vector(mode="double",length=length(X_m[[1]]))
   
   for (i in 1:length(X_m[[1]])) {
-    expected[i] <- agg_econ$gdp_chng[i]
+    expected[i] <- as.integer(df$gdp_chng[i] < 1)
     calculated[i] <- sum(unlist(X_m[i,]) * gammas)
   }
   
@@ -133,13 +134,17 @@ calc_predictions <- function(X_m, gammas) {
 
 gammas <- c(1/3, 1/3, 1/3)
 
-pred_A <- calc_predictions(X_m_A, gammas)
-pred_B <- calc_predictions(X_m_B, gammas)
-pred_C <- calc_predictions(X_m_C, gammas)
-pred_D <- calc_predictions(X_m_D, gammas)
-pred_E <- calc_predictions(X_m_E, gammas)
+pred_A <- calc_predictions(X_m_A, gammas, agg_econ)
+pred_B <- calc_predictions(X_m_B, gammas, agg_econ)
+pred_C <- calc_predictions(X_m_C, gammas, agg_econ)
+pred_D <- calc_predictions(X_m_D, gammas, agg_econ)
+pred_E <- calc_predictions(X_m_E, gammas, agg_econ)
 
-guesses <- c(pred_A, pred_B, pred_C, pred_D, pred_E)
+guesses <- c(pred_A/length(unlist(X_m_A[[1]])),
+             pred_B/length(unlist(X_m_B[[1]])),
+             pred_C/length(unlist(X_m_C[[1]])),
+             pred_D/length(unlist(X_m_D[[1]])), 
+             pred_E/length(unlist(X_m_E[[1]])))
 best <- which(guesses == min(guesses))
 
 if (best == 1) {
