@@ -156,6 +156,9 @@ if (best == 1) {
 
 answers$q2.4 <- k_bestof5
 
+output.file <- "EDUARD_DANALACHE_a2a_m1_2017.RData"
+save(answers, file=paste0(output.dir, output.file))
+
 
 
 
