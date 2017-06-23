@@ -2,11 +2,11 @@
 # Federal Reserve Board of Governors
 # OCDO, DMID Section
 
-install.packages("bizdays")
+#install.packages("bizdays")
 library(bizdays)
 
 # identify home directory
-home.dir    <- "C:/Users/eduar/Documents/Programming/PSS-Summer-School/Module 1/a1_m1_2017/"
+home.dir    <- "C:/Users/Edi/Documents/Programming/R/PSS-Summer-School/Module 1/a1_m1_2017/"
 
 # identify auxillary directories, based off of home.dir
 code.dir    <- paste0(home.dir, "code/")
@@ -16,7 +16,6 @@ plots.dir   <- paste0(home.dir, "plots/")
 # identify input and output directories, based of of data.dir
 input.dir   <- paste0(data.dir, "input/")
 output.dir  <- paste0(data.dir, "output/")
-
 
 # load provided workspace
 load(file=paste0(input.dir, "a1_m1_2017.RData"))
@@ -144,22 +143,28 @@ answers$q3.9a <- sample_df
 
 # part b
 names(sample_df)[1] <- "date"
-dates <- 
 for (i in 1:5000) {
   sample_df$date[i] <- sample(seq(as.Date("1900-01-01"), as.Date("2016-01-01"), by="day"), 1)
 }
-sample_df$date <- as.Date(sample_df$date, origin="1900-01-01")
+sample_df$date <- as.Date(sample_df$date, origin="1970-01-01")
 answers$q3.9b <- sample_df
 
 # part c
-# names(sample_df)[2] <- "name"
-# sample_df$name[1:500] <- as.vector(sample_df$name[1:500])
-# for (i in 1:500) {
-#   sample_df$name[i] <- c(letters[sample(1:26, 1)], letters[sample(1:26, 1)], letters[sample(1:26, 1)])
-# }
+names(sample_df)[2] <- "name"
+for (i in 1:5000) {
+  sample_df$name[i] <- paste0(letters[sample(1:26, 1)], letters[sample(1:26, 1)], letters[sample(1:26, 1)])
+}
+answers$q3.9c <- sample_df
 
 # part d
-
+names(sample_df)[3] <- "name_sum"
+for (i in 1:5000) {
+  sample_df$name_sum[i] <- 0
+  for (j in 1:3) {
+    sample_df$name_sum[i] <- sample_df$name_sum[i] + match(c(substr(sample_df$name[i], j, j)),letters)
+  }
+}
+answers$q3.9d <- sample_df
 
 
 # question 4.10
@@ -172,7 +177,7 @@ date_diff <- function(x) {
   } else {
     month <- strftime(x, format="%m")
     year <- strftime(x, format="%Y")
-    first_day <- as.Date(paste0(paste0(paste0(year, "-"), month), "-01"))
+    first_day <- as.Date(paste0(year, "-", month, "-01"))
     cal <- create.calendar(weekdays=c("saturday", "sunday"), name="cal")
     return(-1 * bizdays(x, first_day, cal))
   }
@@ -210,12 +215,26 @@ answers$q4.11 <- dist2
 
 # question 4.12
 sqr_mat <- function(z) {
-  if (is.null(nrow(z))) {
-    if (sqrt(dim(z)) %% 1 == 0) {
-      error <- T
+  if (is.vector(z)) {
+    if ((sqrt(length(z)) %% 1) == 0) {
+      return(matrix(z, sqrt(length(z))))
+    } else {
+      print("Invalid argument length. Vector length is not a perfect square.")
+      stop()
     }
+  } else if (is.matrix(z)) {
+    if (nrow(z) == ncol(z)) {
+      return(z[])
+    } else {
+      print("Invalid argument dimensions. Input is not a square matrix.")
+      stop()
+    }
+  } else {
+    print("The argument has to be a square matrix or vector with a erfect square length.")
+    stop()
   }
 }
+answers$q4.12 <- sqr_mat
 
 output.file <- "EDUARD_DANALACHE_a1_m1_2017.RData"
 save(answers, file=paste0(output.dir, output.file))
