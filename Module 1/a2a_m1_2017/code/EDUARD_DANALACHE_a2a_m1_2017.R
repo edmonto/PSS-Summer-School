@@ -28,7 +28,7 @@ answers <- list()
 compute_X <- function(k, year, df) {
   X <- c(0, 0, 0)  #init vector to hold T, U, P
   
-  year <- 69 - (year - 1948) #1-index year to read from vector
+  year <- which(df$year == year) #1-index year to read from vector
   
   for (i in 1:3) {  #iterate for each indicator
     for (j in 0:(k[i] - 1)) {   #iterate for each year
@@ -60,11 +60,11 @@ mean_sq_diff <- function(expected_values, calculated_values) {
     sum <- sum + (calculated_values[i] - expected_values[i]) ** 2
   }
   
-  return(sum)
+  return(sum/length(expected_values))
 }
 
 min_gamma_X <- function(gammas, X, year, df) {
-  year <- 69 - (year - 1948) #1-index year to read from vector
+  year <- which(df$year == year) #1-index year to read from vector
   
   G_h <- sum(gammas * X)
   G <- as.integer(df$gdp_chng[year - 1] > 1)
@@ -120,7 +120,7 @@ X_m_C <- compute_all_X(k_C, agg_econ)
 X_m_D <- compute_all_X(k_D, agg_econ)
 X_m_E <- compute_all_X(k_E, agg_econ)
 
-calc_predictions <- function(X_m, gammas, df) {
+calc_mse <- function(X_m, gammas, df) {
   expected <- vector(mode="double", length=length(X_m[[1]]))
   calculated <- vector(mode="double",length=length(X_m[[1]]))
   
@@ -134,17 +134,13 @@ calc_predictions <- function(X_m, gammas, df) {
 
 gammas <- c(1/3, 1/3, 1/3)
 
-pred_A <- calc_predictions(X_m_A, gammas, agg_econ)
-pred_B <- calc_predictions(X_m_B, gammas, agg_econ)
-pred_C <- calc_predictions(X_m_C, gammas, agg_econ)
-pred_D <- calc_predictions(X_m_D, gammas, agg_econ)
-pred_E <- calc_predictions(X_m_E, gammas, agg_econ)
+pred_A <- calc_mse(X_m_A, gammas, agg_econ)
+pred_B <- calc_mse(X_m_B, gammas, agg_econ)
+pred_C <- calc_mse(X_m_C, gammas, agg_econ)
+pred_D <- calc_mse(X_m_D, gammas, agg_econ)
+pred_E <- calc_mse(X_m_E, gammas, agg_econ)
 
-guesses <- c(pred_A/length(unlist(X_m_A[[1]])),
-             pred_B/length(unlist(X_m_B[[1]])),
-             pred_C/length(unlist(X_m_C[[1]])),
-             pred_D/length(unlist(X_m_D[[1]])), 
-             pred_E/length(unlist(X_m_E[[1]])))
+guesses <- c(pred_A, pred_B, pred_C, pred_D, pred_E)
 best <- which(guesses == min(guesses))
 
 if (best == 1) {
