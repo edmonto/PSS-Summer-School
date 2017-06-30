@@ -65,7 +65,7 @@ answers$is_raining <- weather_is_raining
 
 
 # part b
-uniq_df <- weather_is_raining %>% group_by(date) %>%
+uniq_df <- weather_is_raining %>% group_by(date, hour) %>%
            summarise(temp=mean(temp), windspeed=mean(windspeed), precip=mean(precip, na.rm=T), is_raining=ifelse(max(is_raining, na.rm=T) == -Inf,
                                                                                                                  NA, max(is_raining, na.rm=T)))
 answers$uniq_df <- uniq_df
