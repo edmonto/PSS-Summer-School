@@ -208,6 +208,7 @@ lword_search <- function(board, words) {
 
 answers$lword_search <- lword_search
 
+lword_search(mtx_test, c("MOUSE", "ZZZ", "MOU", "GOG"))
 
 output.file <- "EDUARD_DANALACHE_a2b_m1_2017.RData"
 save(answers, file=paste0(output.dir, output.file))

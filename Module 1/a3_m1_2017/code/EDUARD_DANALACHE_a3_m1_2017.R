@@ -10,7 +10,7 @@ library(zoo)
 rm(list=ls())
 
 # identify home directory
-home.dir    <- "C:/Users/eduar/Documents/Programming/PSS-Summer-School/Module 1/a3_m1_2017/"
+home.dir    <- "C:/Users/Edi/Documents/Programming/R/PSS-Summer-School/Module 1/a3_m1_2017/"
 
 # identify auxillary directories, based off of home.dir
 code.dir    <- paste0(home.dir, "code/")
@@ -60,29 +60,28 @@ answers$season_df <- season_df
 
 # problem 4.2
 # part a
-
-#do we look only at full years like before?
-weather_is_raining <- weather %>% mutate(is_raining=ifelse(precip > 0 & !is.na(precip), 1, 0)) #should is_raining ever be NA?
+weather_is_raining <- weather %>% mutate(is_raining=ifelse(precip > 0, 1, 0))
 answers$is_raining <- weather_is_raining
 
 
 # part b
-uniq_df <- weather_is_raining %>% group_by(date) %>% #should precip be let to be NaN? Or just assume those are 0?
-           summarise(temp=mean(temp), windspeed=mean(windspeed), precip=mean(precip, na.rm=T), is_raining=max(is_raining))
+uniq_df <- weather_is_raining %>% group_by(date, hour) %>%
+           summarise(temp=mean(temp), windspeed=mean(windspeed), precip=mean(precip, na.rm=T), is_raining=ifelse(max(is_raining, na.rm=T) == -Inf,
+                                                                                                                 NA, max(is_raining, na.rm=T)))
 answers$uniq_df <- uniq_df
 
 # part c
 variables <- c("temp", "windspeed", "precip", "is_raining")
 median_vals <- c(median(weather_is_raining$temp), median(weather_is_raining$windspeed, na.rm=T),
-                 median(weather_is_raining$precip, na.rm=T), median(weather_is_raining$is_raining))
+                 median(weather_is_raining$precip, na.rm=T), median(weather_is_raining$is_raining, na.rm=T))
 mean_vals <- c(mean(weather_is_raining$temp), mean(weather_is_raining$windspeed, na.rm=T),
-               mean(weather_is_raining$precip, na.rm=T), mean(weather_is_raining$is_raining))
+               mean(weather_is_raining$precip, na.rm=T), mean(weather_is_raining$is_raining, na.rm=T))
 sd_vals <- c(sd(weather_is_raining$temp), sd(weather_is_raining$windspeed, na.rm=T),
-             sd(weather_is_raining$precip, na.rm=T), sd(weather_is_raining$is_raining))
+             sd(weather_is_raining$precip, na.rm=T), sd(weather_is_raining$is_raining, na.rm=T))
 min_vals <- c(min(weather_is_raining$temp), min(weather_is_raining$windspeed, na.rm=T),
-              min(weather_is_raining$precip, na.rm=T), min(weather_is_raining$is_raining))
+              min(weather_is_raining$precip, na.rm=T), min(weather_is_raining$is_raining, na.rm=T))
 max_vals <- c(max(weather_is_raining$temp), max(weather_is_raining$windspeed, na.rm=T),
-              max(weather_is_raining$precip, na.rm=T), max(weather_is_raining$is_raining))
+              max(weather_is_raining$precip, na.rm=T), max(weather_is_raining$is_raining, na.rm=T))
 
 summarize_df <- data.frame(variables, median_vals, mean_vals, sd_vals, min_vals, max_vals)
 answers$summarize_df <- summarize_df
@@ -90,7 +89,7 @@ answers$summarize_df <- summarize_df
 
 # problem 5.3
 # part a
-merged_df <- merge(trips, weather_is_raining) #do we use the weather data set trimmed with only full years?
+merged_df <- merge(sub_whole_years_df, weather_is_raining)
 answers$merged_df <- merged_df
 
 # part b

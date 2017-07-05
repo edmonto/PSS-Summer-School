@@ -233,6 +233,11 @@ dev.off()
 
 
 
+# problem 3.2
+# part 
+
+
+
 
 output.file <- "EDUARD_DANALACHE_a4_m1_2017.RData"
 save(answers, file=paste0(output.dir, output.file))
